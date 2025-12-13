@@ -8,7 +8,7 @@ let currentProcess = null;
 
 class Bo3ProcessService {
 
-    static async start() {
+    static async start(mapCode, gameMode) {
         if (currentProcess) {
             throw new AppError(`El servidor ya está corriendo (PID: ${currentProcess.pid})`, 409);
         }
@@ -36,9 +36,18 @@ class Bo3ProcessService {
         }
 
         console.log(`Intentando iniciar servidor en: ${bo3Path}`);
+        console.log(`Configuración: Mapa [${mapCode}] | Modo [${gameMode}]`);
 
         return new Promise((resolve, reject) => {
-            const subprocess = spawn('cmd.exe', ['/c', 'CustomClient_Server.bat', 't7x'], {
+            const args = [
+                '/c',
+                'CustomClient_Server.bat',
+                't7x',
+                '+map', mapCode,
+                '+gametype', gameMode
+            ];
+
+            const subprocess = spawn('cmd.exe', args, {
                 cwd: bo3Path,
                 stdio: ['ignore', 'pipe', 'pipe'],
                 detached: false
