@@ -1,9 +1,11 @@
+import AppError from "../utils/AppError.js  ";
+
 const globalErrorHandler = (err, req, res, next) => {
 
     console.error(`[${err.status?.toUpperCase() || 'ERROR'}]`, {
         message: err.message,
         statusCode: err.statusCode || 500,
-        type: err.status,                                                                 // ← "fail" o "error"
+        type: err.status,                                                            
         path: req.originalUrl,
         method: req.method,
         timestamp: new Date().toISOString()
