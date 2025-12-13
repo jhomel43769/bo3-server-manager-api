@@ -12,7 +12,7 @@ export const isValidMapName = (mapCode) => {
 export const isValidGameType = (gameType) => {
     if (gameType === undefined || gameType === null) return true;
     
-    if (typeof gameType !== 'string') return false;
+    if (typeof gameType !== 'string') return false; 
     
     const sanitized = gameType.trim();
     if (sanitized.length === 0 || sanitized.length > 50) return false;
@@ -29,4 +29,14 @@ export const sanitizeInput = (input, maxLength = 50) => {
     if (/[;&|`$(){}[\]<>\\]/.test(trimmed)) return null;
     
     return trimmed;
+};
+
+export const isValidPort = (port) => {
+    const p = parseInt(port);
+    return !isNaN(p) && p >= 1024 && p <= 65535;
+};
+
+export const isValidMaxPlayers = (maxPlayers) => {
+    const mp = parseInt(maxPlayers);
+    return !isNaN(mp) && mp >= 1 && mp <= 18;
 };
