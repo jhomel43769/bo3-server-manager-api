@@ -38,5 +38,5 @@ export const isValidPort = (port) => {
 
 export const isValidMaxPlayers = (maxPlayers) => {
     const mp = parseInt(maxPlayers);
-    return !isNaN(mp) && mp >= 1 && mp <= 18;
+    return !isNaN(mp) && mp >= 1 && mp <= 4;
 };
