@@ -1,9 +1,12 @@
 import express from "express"
 import cors from "cors"
 import morgan from "morgan"
+
 import AppError from "./utils/AppError.js"
+
 import globalErrorHandler from "./middleware/errorHandler.js"
 import serverStatusRouter from "./routes/statusServer.route.js"
+import configServerRouter from "./routes/configServer.route.js"
 
 
 const app = express()
@@ -14,7 +17,7 @@ app.use(morgan('dev'))
 
 
 app.use('/api/server', serverStatusRouter)
-
+app.use('/api/server', configServerRouter)
 
 
 app.use((req, res, next) => {

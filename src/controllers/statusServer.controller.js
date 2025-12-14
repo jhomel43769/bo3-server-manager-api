@@ -34,7 +34,7 @@ class ServerActionController {
             }
 
             if (!isValidMaxPlayers(maxPlayers)) {
-                throw new AppError(`Cantidad de jugadores inválida: ${maxPlayers}. (Mín 1, Máx 18).`, 400);
+                throw new AppError(`Cantidad de jugadores inválida: ${maxPlayers}. (Mín 1, Máx 4).`, 400);
             }
 
             if (/[;&|`$(){}[\]<>\\]/.test(serverName)) throw new AppError('Caracteres inválidos en el nombre del servidor', 400);
