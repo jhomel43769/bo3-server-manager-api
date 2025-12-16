@@ -7,5 +7,7 @@ serverStatusRouter.post('/start', ServerActionController.startServer)
 serverStatusRouter.post('/stop', ServerActionController.stopServer)
 
 serverStatusRouter.get('/status', ServerActionController.getStatusServer)
+serverStatusRouter.get('/logs', ServerActionController.getLogs)
+
 
 export default serverStatusRouter;

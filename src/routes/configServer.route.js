@@ -6,4 +6,5 @@ const configServerRouter = express.Router()
 configServerRouter.get('/config', ConfigServerController .getConfig)
 configServerRouter.post('/config', ConfigServerController .updateConfig)
 
+
 export default configServerRouter
