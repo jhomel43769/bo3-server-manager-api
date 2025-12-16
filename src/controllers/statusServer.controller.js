@@ -2,15 +2,16 @@ import Bo3ProcessService from "../services/bo3-process-service.js";
 import ConfigFileService from "../services/config-file-service.js";
 import AppError from "../utils/AppError.js";
 import { isValidGameType, isValidMapName, isValidPort, isValidMaxPlayers, sanitizeInput } from "../utils/validator.js";
+import LogBuffer from "../utils/log-buffer.js";
 
 class ServerActionController {
 
     static async startServer(req, res, next) {
         try {
             const serverName = sanitizeInput(req.body.serverName) || "BO3 Zombies Server";
-            const password = sanitizeInput(req.body.password) || ""; 
+            const password = sanitizeInput(req.body.password) || "";
             const rconPassword = sanitizeInput(req.body.rconPassword) || "admin";
-            
+
             let { mapCode, gameType } = req.body;
             mapCode = mapCode?.trim() || 'zm_zod';
             gameType = gameType?.trim() || 'zclassic';
@@ -46,7 +47,7 @@ class ServerActionController {
                 maxPlayers,
                 port
             });
-            
+
             console.log(`Configuración generada en: ${configResult.filePath}`);
 
             const processResult = await Bo3ProcessService.start(mapCode, gameType);
@@ -88,6 +89,30 @@ class ServerActionController {
             });
         } catch (error) {
             next(error);
+        }
+    }
+
+    static async getLogs(req, res, next) {
+        try {
+            let limit = parseInt(req.query.lines);
+
+            if (isNaN(limit) || limit < 1) {
+                limit = 50;
+            }
+            if (limit > 500) {
+                limit = 500;
+            }
+            const logs = LogBuffer.getLogs(limit);
+
+            res.status(200).json({
+                status: "success",
+                requestedLines: limit, 
+                results: logs.length, 
+                data: logs
+            })
+
+        } catch (error) {
+            next(error)
         }
     }
 }

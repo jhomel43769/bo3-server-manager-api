@@ -1,7 +1,9 @@
 import { spawn, exec } from "child_process";
 import { promises as fs } from "fs";
 import path from "path";
+
 import AppError from "../utils/AppError.js";
+import LogBuffer from "../utils/log-buffer.js";
 
 let currentProcess = null;
 
@@ -12,6 +14,7 @@ class Bo3ProcessService {
         if (currentProcess) {
             throw new AppError(`El servidor ya está corriendo (PID: ${currentProcess.pid})`, 409);
         }
+
 
         const bo3Path = process.env.BO3_PATH;
         if (!bo3Path) {
@@ -36,7 +39,11 @@ class Bo3ProcessService {
         }
 
         console.log(`Intentando iniciar servidor en: ${bo3Path}`);
+        LogBuffer.clear();
+        LogBuffer.add('stdout', `Iniciando proceso: ${mapCode} (${gameMode})`);
         console.log(`Configuración: Mapa [${mapCode}] | Modo [${gameMode}]`);
+
+
 
         return new Promise((resolve, reject) => {
             const args = [
@@ -57,20 +64,31 @@ class Bo3ProcessService {
             subprocess.on('error', (err) => {
                 console.error("Error al intentar ejecutar el proceso:", err);
                 currentProcess = null;
+                LogBuffer.add('stderr', `FATAL: Error al iniciar proceso: ${err.message}`);
                 reject(new AppError(`Error al iniciar servidor: ${err.message}`, 500));
             });
 
             subprocess.on('exit', (code, signal) => {
                 console.log(`Proceso terminado. Código: ${code}, Señal: ${signal}`);
                 currentProcess = null;
+                LogBuffer.add('stdout', `Servidor detenido (Código: ${code})`)
             });
 
             subprocess.stdout.on('data', (data) => {
+                const text = data.toString().trim()
                 console.log(`[BO3 Server]: ${data.toString().trim()}`);
+                if (text) {
+                    console.log(`[BO3]: ${text}`);
+                    LogBuffer.add('stdout', text);
+                }
             });
 
             subprocess.stderr.on('data', (data) => {
-                console.error(`[BO3 Error]: ${data.toString().trim()}`);
+                const text = data.toString().trim();
+                if (text) {
+                    console.error(`[BO3 ERR]: ${text}`);
+                    LogBuffer.add('stderr', text)
+                }
             });
 
             console.log(`Servidor iniciado correctamente. PID: ${subprocess.pid}`);
