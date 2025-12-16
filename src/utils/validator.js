@@ -1,4 +1,4 @@
-import { ALLOWED_MAPS, ALLOWED_GAMETYPES } from '../config/bo3-constants.js';
+import { ALLOWED_MAPS, ALLOWED_GAMETYPES } from '../config/bo3-metadata.js';
 
 export const isValidMapName = (mapCode) => {
     if (!mapCode || typeof mapCode !== 'string') return false;

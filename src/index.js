@@ -8,6 +8,7 @@ import globalErrorHandler from "./middleware/errorHandler.js"
 import serverStatusRouter from "./routes/statusServer.route.js"
 import configServerRouter from "./routes/configServer.route.js"
 import healthRouter from "./routes/health.routes.js"
+import metadataRouter from "./routes/metadata.route.js"
 
 
 const app = express()
@@ -19,7 +20,10 @@ app.use(morgan('dev'))
 
 app.use('/api/server', serverStatusRouter)
 app.use('/api/server', configServerRouter)
+app.use('/api/server', metadataRouter)
+
 app.use('/api/health', healthRouter)
+
 
 
 app.use((req, res, next) => {
